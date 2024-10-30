@@ -24,13 +24,13 @@ https://en.wikipedia.org/wiki/The_dress
 
 ## The tests
 light yellow + blue = light blue
-- black - yellow = black            (#00.00.00 - #80.80.00 = #00.00.00)
-- gray - yellow =   blue            (#80.80.80 + #80.80.00 = #00.00.80)
-- light blue - yellow = blue         (#80.80.ff - #80.80.00 = #00.00.ff)
+- black - yellow = black            (#00.00.00 - #ff.ff.00 = #00.00.00)
+- gray - yellow =   dark blue            (#80.80.80 + #ff.ff.00 = #00.00.80)
+- light blue - yellow = blue         (#80.80.ff - #ff.ff.00 = #00.00.ff)
 
-- black - light blue = yellow        (#00.00.00 - #80.80.ff =   #80.80.00 )
-- light blue + light blue = white    (#80.80.ff + #80.80.ff  = #ff.ff.ff)
-- gray - light blue            (#80.80.80 + #80.80.ff = #00.00.80)
+- black - light blue = black        (#00.00.00 - #80.80.ff =   #00.00.00 )
+- gray - light blue = black           (#80.80.80 + #80.80.ff = #00.00.00)
+- light blue - light blue = white    (#80.80.ff - #80.80.ff  = #00.00.00)
 
 
 - light blue - yellow = dark blue    (#88.88.ff - #88.88.00 = #00.00.ff)
