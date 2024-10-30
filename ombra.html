@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Effetto Sottrazione Blu e Giallo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        #controls {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carica un'immagine e applica effetti</h1>
+    <input type="file" id="upload" accept="image/*"><br><br>
+    <table>
+        <tr>
+            <td>
+                <canvas id="canvas" width="600" height="600"></canvas>
+            </td>
+            <td>
+                <div id="controls">
+                    <label for="blueSlider">Posizione Quadrato Sottrazione Blu:</label>
+                    <input type="range" id="blueSlider" min="0" max="200" value="0"><br><br>
+                    
+                    <label for="blueReduction">Sottrazione Componente Blu:</label>
+                    <input type="range" id="blueReduction" min="0" max="255" value="142"><br><br>
+                    
+                    <label for="yellowSlider">Posizione Quadrato Sottrazione Giallo:</label>
+                    <input type="range" id="yellowSlider" min="0" max="200" value="200"><br><br>
+                    
+                    <label for="yellowReduction">Sottrazione Componente Gialla:</label>
+                    <input type="range" id="yellowReduction" min="0" max="255" value="255">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        const STARTY1 = 0;
+        const STARTY2 = 0;
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const upload = document.getElementById('upload');
+        const blueSlider = document.getElementById('blueSlider');
+        const yellowSlider = document.getElementById('yellowSlider');
+        const blueReduction = document.getElementById('blueReduction');
+        const yellowReduction = document.getElementById('yellowReduction');
+        let image = new Image();
+
+        // Carica immagine scelta dall'utente
+        upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    image.src = event.target.result;
+                    image.onload = () => drawImageWithEffects();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Funzione per disegnare l'immagine con sottrazione blu e gialla
+        function drawImageWithEffects() {
+            if (!image) return;
+
+            const bluePosition = parseInt(blueSlider.value, 10);
+            const yellowPosition = parseInt(yellowSlider.value, 10);
+            const blueSubtract = parseInt(blueReduction.value, 10);
+            const yellowSubtract = parseInt(yellowReduction.value, 10);
+
+            // Cancella il canvas e disegna l'immagine
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            // Applica la sottrazione della componente blu
+            const squareSizeX = 200;
+            const squareSizeY = 600;
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            for (let y = STARTY1; y < STARTY1 + squareSizeY; y++) {
+                for (let x = bluePosition; x < bluePosition + squareSizeX; x++) {
+                    const index = (y * canvas.width + x) * 4;
+                    imageData.data[index + 1] = Math.max(0, imageData.data[index + 1] + blueSubtract);
+                }
+            }
+
+            // Applica la sottrazione della componente gialla
+            for (let y = STARTY2; y < STARTY2 + squareSizeY; y++) {
+                for (let x = 200 + yellowPosition; x < 200 + yellowPosition + squareSizeX; x++) {
+                    const index = (y * canvas.width + x) * 4;
+                    imageData.data[index + 1] = Math.max(0, imageData.data[index + 1] - yellowSubtract);
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // Aggiorna l'immagine con sottrazione blu e gialla quando si muovono gli slider
+        blueSlider.addEventListener('input', drawImageWithEffects);
+        yellowSlider.addEventListener('input', drawImageWithEffects);
+        blueReduction.addEventListener('input', drawImageWithEffects);
+        yellowReduction.addEventListener('input', drawImageWithEffects);
+    </script>
+</body>
+</html>
+
