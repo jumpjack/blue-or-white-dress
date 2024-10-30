@@ -25,11 +25,35 @@
 
     .image-container {
       position: relative;
+      /* Aggiunto per assicurare che il contenitore mantenga le dimensioni dell'immagine */
+      display: inline-block;
     }
 
     #demo-image {
       max-width: 400px;
       height: auto;
+      display: block;
+    }
+
+    /* Stili rivisti per le linee del mirino */
+    .crosshair-h {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.8);
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .crosshair-v {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 0;
+      border-left: 1px dashed rgba(255, 255, 255, 0.8);
+      border-right: 1px dashed rgba(0, 0, 0, 0.5);
+      pointer-events: none;
     }
 
     .visualization {
@@ -96,6 +120,8 @@
   <div class="container">
     <div class="image-container">
       <img id="demo-image" src="blu-white-dress.png" >
+      <div class="crosshair-h"></div>
+      <div class="crosshair-v"></div>
       <div id="coordinates">X: 0, Y: 0</div>
     </div>
 
@@ -128,6 +154,8 @@
     const coordinates = document.getElementById('coordinates');
     const colorPreview = document.getElementById('color-preview');
     const colorName = document.getElementById('color-name');
+    const crosshairH = document.querySelector('.crosshair-h');
+    const crosshairV = document.querySelector('.crosshair-v');
     
     // Bars elements
     const redBar = document.getElementById('red-bar');
@@ -179,16 +207,37 @@
       return closestColor;
     }
 
+    // Update crosshair position
+    function updateCrosshair(x, y) {
+      crosshairH.style.top = `${y}px`;
+      crosshairV.style.left = `${x}px`;
+    }
+
     img.onload = function() {
       canvas.width = img.width;
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
     };
 
+    // Hide crosshair when mouse leaves image
+    img.addEventListener('mouseleave', function() {
+      crosshairH.style.display = 'none';
+      crosshairV.style.display = 'none';
+    });
+
+    // Show crosshair when mouse enters image
+    img.addEventListener('mouseenter', function() {
+      crosshairH.style.display = 'block';
+      crosshairV.style.display = 'block';
+    });
+
     img.addEventListener('mousemove', function(e) {
       const rect = img.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      
+      // Update crosshair
+      updateCrosshair(x, y);
       
       // Update coordinates display
       coordinates.textContent = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
