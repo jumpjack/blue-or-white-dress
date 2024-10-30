@@ -264,9 +264,9 @@
       blueBar.style.backgroundColor = `rgb(0, 0, 255)`;
 
       // Update value labels
-      redValue.textContent = `R: ${r}`;
-      greenValue.textContent = `G: ${g}`;
-      blueValue.textContent = `B: ${b}`;
+      redValue.textContent = `R: ${r}`.padEnd(8);
+      greenValue.textContent = `G: ${g}`.padEnd(8);
+      blueValue.textContent = `B: ${b}`.padEnd(8);
     });
   </script>
 </body>
