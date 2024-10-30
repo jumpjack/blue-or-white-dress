@@ -6,6 +6,9 @@ Interactive simulation of conditions which make a blue&amp;black dress look whit
 
 ![image](https://github.com/user-attachments/assets/d3655053-aaaf-4662-b54e-7f29ae40b09c)
 
+https://en.wikipedia.org/wiki/The_dress
+
+
 ## The reality
 
 ![image](https://github.com/user-attachments/assets/3c6f3d4c-e6ff-4354-8b6d-7fbfef450d36)
