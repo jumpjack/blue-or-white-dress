@@ -75,13 +75,15 @@
       border-radius: 8px;
     }
 
-    #color-name {
-      font-size: 1.2em;
-      font-weight: bold;
-      padding: 5px 15px;
-      border-radius: 4px;
-      background: #eee;
-    }
+#color-name {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 5px 15px;
+  border-radius: 4px;
+  background: #eee;
+  min-width: 120px; /* Larghezza minima per stabilizzare il testo */
+  text-align: center; /* Centra il testo */
+}
 
     .bars-container {
       display: flex;
@@ -103,9 +105,11 @@
       transition: height 0.2s, background-color 0.2s;
     }
 
-    .value-label {
-      font-weight: bold;
-    }
+.value-label {
+  font-weight: bold;
+  min-width: 50px; /* Larghezza fissa per stabilizzare il testo RGB */
+  text-align: center; /* Centra il testo */
+}
 
     #coordinates {
       font-family: monospace;
