@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RGB Value Visualizer</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .image-container {
+      position: relative;
+    }
+
+    #demo-image {
+      max-width: 400px;
+      height: auto;
+    }
+
+    .visualization {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #color-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #color-preview {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+
+    #color-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      padding: 5px 15px;
+      border-radius: 4px;
+      background: #eee;
+    }
+
+    .bars-container {
+      display: flex;
+      gap: 20px;
+      height: 200px;
+      align-items: flex-end;
+    }
+
+    .bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar {
+      width: 40px;
+      background-color: #ddd;
+      transition: height 0.2s, background-color 0.2s;
+    }
+
+    .value-label {
+      font-weight: bold;
+    }
+
+    #coordinates {
+      font-family: monospace;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>RGB Value Visualizer</h2>
+  
+  <div class="container">
+    <div class="image-container">
+      <img id="demo-image" src="/api/placeholder/400/300" alt="Demo image" crossorigin="anonymous">
+      <div id="coordinates">X: 0, Y: 0</div>
+    </div>
+
+    <div class="visualization">
+      <div id="color-info">
+        <div id="color-preview"></div>
+        <div id="color-name">-</div>
+      </div>
+      <div class="bars-container">
+        <div class="bar-wrapper">
+          <div class="bar" id="red-bar"></div>
+          <div class="value-label" id="red-value">R: 0</div>
+        </div>
+        <div class="bar-wrapper">
+          <div class="bar" id="green-bar"></div>
+          <div class="value-label" id="green-value">G: 0</div>
+        </div>
+        <div class="bar-wrapper">
+          <div class="bar" id="blue-bar"></div>
+          <div class="value-label" id="blue-value">B: 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const img = document.getElementById('demo-image');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const coordinates = document.getElementById('coordinates');
+    const colorPreview = document.getElementById('color-preview');
+    const colorName = document.getElementById('color-name');
+    
+    // Bars elements
+    const redBar = document.getElementById('red-bar');
+    const greenBar = document.getElementById('green-bar');
+    const blueBar = document.getElementById('blue-bar');
+    
+    // Value labels
+    const redValue = document.getElementById('red-value');
+    const greenValue = document.getElementById('green-value');
+    const blueValue = document.getElementById('blue-value');
+
+    // Define reference colors
+    const referenceColors = {
+      'Rosso': [255, 0, 0],
+      'Arancione': [255, 165, 0],
+      'Giallo': [255, 255, 0],
+      'Verde': [0, 255, 0],
+      'Blu': [0, 0, 255],
+      'Indaco': [75, 0, 130],
+      'Viola': [238, 130, 238],
+      'Bianco': [255, 255, 255],
+      'Grigio chiaro': [192, 192, 192],
+      'Grigio scuro': [64, 64, 64],
+      'Nero': [0, 0, 0]
+    };
+
+    // Calculate color distance (Euclidean distance in RGB space)
+    function colorDistance(color1, color2) {
+      return Math.sqrt(
+        Math.pow(color1[0] - color2[0], 2) +
+        Math.pow(color1[1] - color2[1], 2) +
+        Math.pow(color1[2] - color2[2], 2)
+      );
+    }
+
+    // Find the closest reference color
+    function findClosestColor(r, g, b) {
+      let minDistance = Infinity;
+      let closestColor = null;
+
+      for (const [name, color] of Object.entries(referenceColors)) {
+        const distance = colorDistance([r, g, b], color);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestColor = name;
+        }
+      }
+
+      return closestColor;
+    }
+
+    img.onload = function() {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    };
+
+    img.addEventListener('mousemove', function(e) {
+      const rect = img.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Update coordinates display
+      coordinates.textContent = `X: ${Math.round(x)}, Y: ${Math.round(y)}`;
+
+      // Get pixel data
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const [r, g, b] = pixel;
+
+      // Update color preview
+      colorPreview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+      // Update color name
+      const closestColor = findClosestColor(r, g, b);
+      colorName.textContent = closestColor;
+
+      // Update bars
+      const maxHeight = 200; // Maximum height of bars in pixels
+      redBar.style.height = `${(r / 255) * maxHeight}px`;
+      greenBar.style.height = `${(g / 255) * maxHeight}px`;
+      blueBar.style.height = `${(b / 255) * maxHeight}px`;
+
+      // Update bar colors
+      redBar.style.backgroundColor = `rgb(${r}, 0, 0)`;
+      greenBar.style.backgroundColor = `rgb(0, ${g}, 0)`;
+      blueBar.style.backgroundColor = `rgb(0, 0, ${b})`;
+
+      // Update value labels
+      redValue.textContent = `R: ${r}`;
+      greenValue.textContent = `G: ${g}`;
+      blueValue.textContent = `B: ${b}`;
+    });
+  </script>
+</body>
+</html>
