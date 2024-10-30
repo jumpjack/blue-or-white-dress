@@ -95,7 +95,7 @@
             for (let y = STARTY1; y < STARTY1 + squareSizeY; y++) {
                 for (let x = bluePosition; x < bluePosition + squareSizeX; x++) {
                     const index = (y * canvas.width + x) * 4;
-                    imageData.data[index + 2] = Math.max(0, imageData.data[index + 2] + blueSubtract);
+                    imageData.data[index + 2] = Math.max(0, imageData.data[index + 2] - blueSubtract);
                 }
             }
 
