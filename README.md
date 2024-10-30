@@ -21,3 +21,17 @@ Interactive simulation of conditions which make a blue&amp;black dress look whit
 https://en.wikipedia.org/wiki/The_dress
 
 ![](https://github.com/jumpjack/blue-or-white-dress/blob/main/blu-white-dress-explained.png?raw=true)
+
+## The tests
+light yellow + blue = light blue
+- black - yellow = black            (#00.00.00 - #80.80.00 = #00.00.00)
+- gray - yellow =   blue            (#80.80.80 + #80.80.00 = #00.00.80)
+- light blue - yellow = blue         (#80.80.ff - #80.80.00 = #00.00.ff)
+
+- black - light blue = yellow        (#00.00.00 - #80.80.ff =   #80.80.00 )
+- light blue + light blue = white    (#80.80.ff + #80.80.ff  = #ff.ff.ff)
+- gray - light blue            (#80.80.80 + #80.80.ff = #00.00.80)
+
+
+- light blue - yellow = dark blue    (#88.88.ff - #88.88.00 = #00.00.ff)
+- 
